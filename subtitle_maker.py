@@ -10,6 +10,21 @@ import nltk
 from urllib import request, parse
 import json
 import random
+import ssl
+import subprocess
+
+def signalProcessing(inpath):
+    '''
+    处理音频，降噪和去除静音
+    '''
+    # from aukit import remove_noise, remove_silence
+    # aunoise inpath outpath [in_format]
+    outpath = "test_out.wav"
+    in_format = "wav"
+    command = 'aunoise %s %s [%s]' % (inpath, outpath,in_format)
+    subprocess.call(command, shell=True)
+    print("done")
+    # return outpath
 
 def reset_wav(old_path,new_path):
     try:
@@ -43,9 +58,13 @@ def get_file_content(filePath):
 def speech2text(filepath, cuid='yixue', dev_pid=1737, rate=16000, format='wav'):
     # 识别本地文件
     try:
-        APP_ID = '16590304'
-        API_KEY = 'itxU5q7d5OnYEWk2pPibv18U'
-        SECRET_KEY = '37aGi2oPfh5WZ9whYhXGAUi7i3YmjkeN'
+        # APP_ID = '16590304'
+        # API_KEY = 'itxU5q7d5OnYEWk2pPibv18U'
+        # SECRET_KEY = '37aGi2oPfh5WZ9whYhXGAUi7i3YmjkeN'
+        """ 你的 APPID AK SK """
+        APP_ID = '15414045'
+        API_KEY = 'BwSTqlxahGvI5k0kGIYDlybZ'
+        SECRET_KEY = 'g79fxW3Zqw1qrYKeQHmufv8zNXafc6Vt'
         client = AipSpeech(APP_ID, API_KEY, SECRET_KEY)
         res = client.asr(get_file_content(filepath), format, rate, {
             'dev_pid': dev_pid,
@@ -109,18 +128,20 @@ def youdao_auto_translator(input_text):
 
 def dojob():
 
-    mp4_to_wav('test.mp4','test.wav')
-    r = speech2text('test.wav')
+    mp4_to_wav('1.mp4','1.wav') # 视频转音频
+    signalProcessing('1.wav') # 信号处理
+    r = speech2text('test_out.wav') # 语音识别文字
     #print(r)
     # a = get_time_long('test.wav')
     # print(a)
     # b = str(a).split(':')[-1]
     # print(b)
     #r = '''there's just some cultural things that people need to get used to they don't smile unless they're around people they love and they're genuinely happy any other smile is considered being fake and actually really admire that I think we probably smiled through much you're in Americaand so they don't really smile and photographs at all ever some of the youth maybe are getting there now but even if it's a really happy day even wedding days sometimes it just doesyeah that's how it'''
-    rl = cutSentence(r)
+    rl = cutSentence(r) # 断句
 
     n=0
     cur = ''
+    print('识别结果:')
     for l in rl:
         cur = cur +  ' '+ l
         n+=1
@@ -135,4 +156,5 @@ def dojob():
     for f in frl:
         print(f)
 
-dojob()
+if __name__=="__main__":
+    dojob()

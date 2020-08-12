@@ -13,7 +13,7 @@ import time
 
 def main():
     # 载入
-    name = '1-02.wav'
+    name = 'test.wav'
     sound = AudioSegment.from_wav(name)
     # sound = sound[:3*60*1000] # 如果文件较大，先取前3分钟测试，根据测试结果，调整参数
 
